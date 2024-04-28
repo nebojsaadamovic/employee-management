@@ -1,5 +1,6 @@
 package com.example.employeemanagement.service;
 
+import com.example.employeemanagement.dto.UserDTO;
 import com.example.employeemanagement.entity.Department;
 import com.example.employeemanagement.entity.Employee;
 import com.example.employeemanagement.entity.User;
@@ -10,7 +11,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -40,29 +40,72 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
     }
-
+//
     @Override
     public String createEmployee(Employee employee) throws JsonProcessingException {
-        User user = employee.getUser();
-        Employee existingEmployee = employeeRepository.getEmployeeByFirstNameAndLastName(employee.getFirstName(), employee.getLastName());
-        if (existingEmployee != null) {
+//        User user = employee.getUser();
+//        Employee existingEmployee = employeeRepository.getEmployeeByFirstNameAndLastName(employee.getFirstName(), employee.getLastName());
+//        if (existingEmployee != null) {
+//            return objectMapper.writeValueAsString("Employee already exists");
+//        }
+//        if (user != null) {
+//            Optional<User> existingUser = userRepository.findByEmail(user.getUsername());
+//            if (existingUser.isEmpty()) {
+//                userRepository.save(user);
+//            } else {
+//                return objectMapper.writeValueAsString("User already exists");
+//            }
+//        }
+//        try {
+//            employeeRepository.save(employee);
+//            return objectMapper.writeValueAsString("Employee saved successfully");
+//        } catch (DataIntegrityViolationException e) {
+//            return objectMapper.writeValueAsString("Employee not saved successfully: " + e.getMessage());
+//        }
+return null;
+   }
+
+
+    @Override
+    public String createEmployeDTO(UserDTO userDTO) throws JsonProcessingException {
+        Employee existEmployee = employeeRepository.findEmployeeByEmail(userDTO.getEmail());
+        if (existEmployee != null) {
             return objectMapper.writeValueAsString("Employee already exists");
         }
-        if (user != null) {
-            Optional<User> existingUser = userRepository.findByEmail(user.getUsername());
-            if (existingUser.isEmpty()) {
-                userRepository.save(user);
-            } else {
-                return objectMapper.writeValueAsString("User already exists");
-            }
+
+        User user = userRepository.findByUsername(userDTO.getUsername());
+        System.out.println(user);
+        if (user == null) {
+            user = new User();
+            user.setEmail(userDTO.getEmail());
+            user.setUsername(userDTO.getUsername());
+            user.setPassword(userDTO.getPassword());
+            user = userRepository.save(user);
+        }else{
+            return objectMapper.writeValueAsString("Username already exists");
         }
-        try {
-            employeeRepository.save(employee);
-            return objectMapper.writeValueAsString("Employee saved successfully");
-        } catch (DataIntegrityViolationException e) {
-            return objectMapper.writeValueAsString("Employee not saved successfully: " + e.getMessage());
+        Department department = departmentRepository.findById(userDTO.getDepartment().getId()).orElse(null);
+        if (department == null) {
+            department = new Department();
+            department.setId(userDTO.getDepartment().getId());
+            department.setName(userDTO.getDepartment().getName());
+            department = departmentRepository.save(department);
+        }else{
+            return objectMapper.writeValueAsString("Department already exists");
         }
+        Employee employee = new Employee();
+        employee.setFirstName(userDTO.getFirstName());
+        employee.setLastName(userDTO.getLastName());
+        employee.setSalary(Double.parseDouble(userDTO.getSallary()));
+        employee.setDepartment(department);
+        employee.setUser(user);
+        employeeRepository.save(employee);
+
+        return objectMapper.writeValueAsString("Employee saved");
     }
+
+
+
 
 
     @Override

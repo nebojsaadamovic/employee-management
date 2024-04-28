@@ -1,5 +1,6 @@
 package com.example.employeemanagement.controller;
 
+import com.example.employeemanagement.dto.UserDTO;
 import com.example.employeemanagement.entity.Employee;
 import com.example.employeemanagement.service.EmployeeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,14 +25,19 @@ public class EmployeeController {
 
 
 
-
-
     // Get all employees  //radi
     @GetMapping("/list")
-     @PreAuthorize("hasAuthority('HR')")
     public ResponseEntity<List<Employee>> getAllEmployees() {
         List<Employee> employees = employeeService.getAllEmployees();
         return new ResponseEntity<>(employees, HttpStatus.OK);
+    }
+    // Create new employee  //radi
+    @PostMapping("/create")
+    public ResponseEntity<String> createEmployee(@RequestBody UserDTO employee) throws JsonProcessingException {
+        System.out.println(employee);
+        String createdEmployee = employeeService.createEmployeDTO(employee);
+        return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
+
     }
 
     // Get employee by ID  //radi
@@ -39,13 +45,6 @@ public class EmployeeController {
     public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
         Employee employee = employeeService.getEmployeeById(id);
         return new ResponseEntity<>(employee, HttpStatus.OK);
-    }
-
-    // Create new employee  //radi
-    @PostMapping("/create")
-    public ResponseEntity<String> createEmployee(@RequestBody Employee employee) throws JsonProcessingException {
-        String createdEmployee = employeeService.createEmployee(employee);
-        return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
     }
 
     // Update existing employee

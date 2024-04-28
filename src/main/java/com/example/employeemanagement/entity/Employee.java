@@ -1,5 +1,6 @@
 package com.example.employeemanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -13,18 +14,14 @@ public class Employee  implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String firstName;
     private String lastName;
     private double salary;
 
-//    //@JsonIgnore
-//    @OneToOne
-//    @JoinColumn(name = "user_id", referencedColumnName = "id")
-//    private User user; // Dodali smo vezu sa korisnikom
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonIgnore
     private User user;
 
     @ManyToOne

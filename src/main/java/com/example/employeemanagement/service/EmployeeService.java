@@ -1,5 +1,6 @@
 package com.example.employeemanagement.service;
 
+import com.example.employeemanagement.dto.UserDTO;
 import com.example.employeemanagement.entity.Employee;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,8 @@ public interface EmployeeService {
     Employee getEmployeeById(Long id);
 
     String createEmployee(Employee employee) throws JsonProcessingException;
+
+    String createEmployeDTO(UserDTO userDTO) throws JsonProcessingException;
 
     Employee updateEmployee(Long id, Employee employeeDetails);
 

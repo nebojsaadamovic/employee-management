@@ -32,11 +32,10 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request.requestMatchers("/auth/**").permitAll()
-                      //  .requestMatchers("/authenticate").permitAll()//
-                        .requestMatchers("/api/departments/**").permitAll()
-
-                        .requestMatchers("/employees/delete/{id}").permitAll()
+                        .requestMatchers("/api/employees/create").permitAll()
                         .requestMatchers("/api/employees/**").permitAll()
+                        .requestMatchers("/api/departments/**").permitAll()
+                        .requestMatchers("/employees/delete/{id}").permitAll()
                         .requestMatchers("/api/employees/delete/{id}").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**",
                                 "/swagger-resources/**", "/swagger-ui.html",
