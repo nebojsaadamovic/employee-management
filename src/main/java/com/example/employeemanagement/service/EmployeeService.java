@@ -13,8 +13,6 @@ public interface EmployeeService {
 
     Employee getEmployeeById(Long id);
 
-    String createEmployee(Employee employee) throws JsonProcessingException;
-
     String createEmployeDTO(UserDTO userDTO) throws JsonProcessingException;
 
     Employee updateEmployee(Long id, Employee employeeDetails);

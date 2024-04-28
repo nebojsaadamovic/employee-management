@@ -40,31 +40,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
     }
-//
-    @Override
-    public String createEmployee(Employee employee) throws JsonProcessingException {
-//        User user = employee.getUser();
-//        Employee existingEmployee = employeeRepository.getEmployeeByFirstNameAndLastName(employee.getFirstName(), employee.getLastName());
-//        if (existingEmployee != null) {
-//            return objectMapper.writeValueAsString("Employee already exists");
-//        }
-//        if (user != null) {
-//            Optional<User> existingUser = userRepository.findByEmail(user.getUsername());
-//            if (existingUser.isEmpty()) {
-//                userRepository.save(user);
-//            } else {
-//                return objectMapper.writeValueAsString("User already exists");
-//            }
-//        }
-//        try {
-//            employeeRepository.save(employee);
-//            return objectMapper.writeValueAsString("Employee saved successfully");
-//        } catch (DataIntegrityViolationException e) {
-//            return objectMapper.writeValueAsString("Employee not saved successfully: " + e.getMessage());
-//        }
-return null;
-   }
-
 
     @Override
     public String createEmployeDTO(UserDTO userDTO) throws JsonProcessingException {
@@ -81,7 +56,7 @@ return null;
             user.setUsername(userDTO.getUsername());
             user.setPassword(userDTO.getPassword());
             user = userRepository.save(user);
-        }else{
+        } else {
             return objectMapper.writeValueAsString("Username already exists");
         }
         Department department = departmentRepository.findById(userDTO.getDepartment().getId()).orElse(null);
@@ -90,7 +65,7 @@ return null;
             department.setId(userDTO.getDepartment().getId());
             department.setName(userDTO.getDepartment().getName());
             department = departmentRepository.save(department);
-        }else{
+        } else {
             return objectMapper.writeValueAsString("Department already exists");
         }
         Employee employee = new Employee();
@@ -100,13 +75,8 @@ return null;
         employee.setDepartment(department);
         employee.setUser(user);
         employeeRepository.save(employee);
-
         return objectMapper.writeValueAsString("Employee saved");
     }
-
-
-
-
 
     @Override
     public Employee updateEmployee(Long id, Employee employeeDetails) {
@@ -140,43 +110,34 @@ return null;
     }
 
 
-    @Override
-    public void deleteEmployee(Long id) {
-        employeeRepository.deleteById(id);
-    }
-
-
     public void deleteEmployeeAndUser(Long id) {
         try {
-            // Pronalazimo zaposlenika prema ID-u
             Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Zaposlenik ne postoji s ID-om: " + id));
-            // Pronalazimo korisnika koji je povezan s tim zaposlenikom
             User user = userRepository.findByEmployeeId(id);
             if (user == null) {
                 throw new IllegalArgumentException("Korisnik nije pronađen za zaposlenika s ID-om: " + id);
             }
-
-            // Brišemo zaposlenika
             employeeRepository.delete(employee);
-
-            // Brišemo korisnika
             userRepository.delete(user);
+
             if (!employeeRepository.existsById(id) && userRepository.findByEmployeeId(id) == null) {
                 System.out.println("nesoooo");
                 objectMapper.writeValueAsString("Zaposlenik i korisnik su uspješno izbrisani");
-                //return "Zaposlenik i korisnik su uspješno izbrisani.";
             } else {
                 throw new IllegalStateException("Došlo je do greške prilikom brisanja zaposlenika i korisnika.");
             }
         } catch (Exception e) {
             e.getMessage();
         }
-
     }
-
 
     @Override
     public Page<Employee> searchEmployees(String keyword, Pageable pageable) {
         return employeeRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(keyword, keyword, pageable);
+    }
+
+
+    @Override
+    public void deleteEmployee(Long id) {
     }
 }
