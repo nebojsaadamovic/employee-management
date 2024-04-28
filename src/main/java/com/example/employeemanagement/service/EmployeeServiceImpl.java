@@ -112,19 +112,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public void deleteEmployeeAndUser(Long id) {
         try {
-            Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Zaposlenik ne postoji s ID-om: " + id));
+            Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Employee does not exist with ID: " + id));
             User user = userRepository.findByEmployeeId(id);
             if (user == null) {
-                throw new IllegalArgumentException("Korisnik nije pronađen za zaposlenika s ID-om: " + id);
+                throw new IllegalArgumentException("User not found for employee with ID: " + id);
             }
             employeeRepository.delete(employee);
             userRepository.delete(user);
 
             if (!employeeRepository.existsById(id) && userRepository.findByEmployeeId(id) == null) {
-                System.out.println("nesoooo");
-                objectMapper.writeValueAsString("Zaposlenik i korisnik su uspješno izbrisani");
+                objectMapper.writeValueAsString("Employee and user successfully deleted");
             } else {
-                throw new IllegalStateException("Došlo je do greške prilikom brisanja zaposlenika i korisnika.");
+                throw new IllegalStateException("An error occurred while deleting employee and user.");
             }
         } catch (Exception e) {
             e.getMessage();
