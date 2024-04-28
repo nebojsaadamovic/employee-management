@@ -47,7 +47,6 @@ public class DepartmentController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-
     @GetMapping("/list-departments-avgsalary-numemployees")
     public ResponseEntity<List<Object[]>> listDepartByAvgSalaryAndNumEmployees() {
         List<Object[]> departments = departmentService.listDepartByAvgSalaryAndNumEmployees();

@@ -23,38 +23,31 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-
-
-    // Get all employees  //radi
     @GetMapping("/list")
     public ResponseEntity<List<Employee>> getAllEmployees() {
         List<Employee> employees = employeeService.getAllEmployees();
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
-    // Create new employee  //radi
+
     @PostMapping("/create")
     public ResponseEntity<String> createEmployee(@RequestBody UserDTO employee) throws JsonProcessingException {
         System.out.println(employee);
         String createdEmployee = employeeService.createEmployeDTO(employee);
         return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
-
     }
 
-    // Get employee by ID  //radi
     @GetMapping("/get-by/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
         Employee employee = employeeService.getEmployeeById(id);
         return new ResponseEntity<>(employee, HttpStatus.OK);
     }
 
-    // Update existing employee
     @PutMapping("/update/{id}")
     public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employeeDetails) {
         Employee updatedEmployee = employeeService.updateEmployee(id, employeeDetails);
         return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
     }
 
-    // Delete employee
     @Transactional
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')") // Samo korisnici sa ulogom ADMIN mogu brisati zaposlene
@@ -62,9 +55,6 @@ public class EmployeeController {
         employeeService.deleteEmployeeAndUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-
-
 
     @GetMapping("/search")
     public Page<Employee> searchEmployees(
