@@ -28,7 +28,7 @@ public class EmployeeController {
 
     // Get all employees  //radi
     @GetMapping("/list")
-     @PreAuthorize("hasAuthority('ADMIN')")
+     @PreAuthorize("hasAuthority('HR')")
     public ResponseEntity<List<Employee>> getAllEmployees() {
         List<Employee> employees = employeeService.getAllEmployees();
         return new ResponseEntity<>(employees, HttpStatus.OK);

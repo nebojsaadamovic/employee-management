@@ -132,19 +132,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
 
-
-
-
-
-
-//    @Override
-//    public Page<Employee> searchEmployees(String keyword, int page, int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        return employeeRepository.findByFirstNameContainingOrLastNameContainingOrDepartmentContaining(
-//                keyword, keyword, keyword, pageable);
-//    }
-
-
     @Override
     public Page<Employee> searchEmployees(String keyword, Pageable pageable) {
         return employeeRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(keyword, keyword, pageable);
