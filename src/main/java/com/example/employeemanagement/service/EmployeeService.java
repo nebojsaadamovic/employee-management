@@ -21,6 +21,8 @@ public interface EmployeeService {
 
     void deleteEmployeeAndUser(Long id);
 
-   // Page<Employee> searchEmployees(String keyword, int page, int size);
-   Page<Employee> searchEmployees(String keyword, Pageable pageable);
+
+    Page<Employee> searchEmployees(String keyword, Pageable pageable);
+
+    List<Employee> findAllActiveEmployees();
 }

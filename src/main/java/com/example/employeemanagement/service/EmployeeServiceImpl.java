@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -86,6 +87,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setFirstName(employeeDetails.getFirstName());
         employee.setLastName(employeeDetails.getLastName());
         employee.setSalary(employeeDetails.getSalary());
+        employee.setActive(employeeDetails.getActive());
 
         Department department = employeeDetails.getDepartment();
         if (Objects.nonNull(department)) {
@@ -109,32 +111,32 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.save(employee);
     }
 
-
+    @Transactional
     public void deleteEmployeeAndUser(Long id) {
         try {
-            Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Employee does not exist with ID: " + id));
+            Employee employee = employeeRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Employee does not exist with ID: " + id));
             User user = userRepository.findByEmployeeId(id);
             if (user == null) {
                 throw new IllegalArgumentException("User not found for employee with ID: " + id);
             }
-            employeeRepository.delete(employee);
-            userRepository.delete(user);
-
-            if (!employeeRepository.existsById(id) && userRepository.findByEmployeeId(id) == null) {
-                objectMapper.writeValueAsString("Employee and user successfully deleted");
-            } else {
-                throw new IllegalStateException("An error occurred while deleting employee and user.");
-            }
+            employeeRepository.softDeleteEmployee(employee.getId());
+            userRepository.softDeleteUserByEmployee(employee.getId());
+            objectMapper.writeValueAsString("Employee and user successfully deleted");
         } catch (Exception e) {
-            e.getMessage();
+            throw new IllegalStateException("An error occurred while deleting employee and user.", e);
         }
     }
 
     @Override
     public Page<Employee> searchEmployees(String keyword, Pageable pageable) {
-        return employeeRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(keyword, keyword, pageable);
+        return employeeRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseAndActive(keyword, keyword, pageable);
     }
 
+    @Override
+    public List<Employee> findAllActiveEmployees() {
+        return employeeRepository.findAllActiveEmployees();
+    }
 
     @Override
     public void deleteEmployee(Long id) {

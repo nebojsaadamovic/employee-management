@@ -17,11 +17,12 @@ public class Employee  implements Serializable {
     private String firstName;
     private String lastName;
     private double salary;
-
+    private Boolean active=true;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
+    @JsonIgnoreProperties("employees")
     private User user;
 
     @ManyToOne
@@ -62,8 +63,8 @@ public class Employee  implements Serializable {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", salary=" + salary +
-                ", user=" + (user != null ? user.getId() : null) + // prikazujemo samo id korisnika
-                ", department=" + (department != null ? department.getId() : null) + // prikazujemo samo id odeljenja
+                ", user=" + (user != null ? user.getId() : null) +
+                ", department=" + (department != null ? department.getId() : null) +
                 '}';
     }
 }

@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request.requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/employees/create").permitAll()
                         .requestMatchers("/api/employees/**").permitAll()
+                        .requestMatchers("/auth/signup").permitAll()
                         .requestMatchers("/api/departments/**").permitAll()
                         .requestMatchers("/employees/delete/{id}").permitAll()
                         .requestMatchers("/api/employees/delete/{id}").permitAll()

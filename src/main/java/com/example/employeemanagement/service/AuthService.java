@@ -1,3 +1,4 @@
+
 package com.example.employeemanagement.service;
 
 import com.example.employeemanagement.dto.ReqRes;
@@ -33,7 +34,7 @@ public class AuthService {
             user.setRole(RoleName.valueOf(registrationRequest.getRole()));
             User ourUserResult = ourUserRepo.save(user);
             if (ourUserResult != null && ourUserResult.getId()>0) {
-                resp.setUser(ourUserResult);
+                resp.setUserString(String.valueOf(ourUserResult));
                 resp.setMessage("User Saved Successfully");
                 resp.setStatusCode(200);
             }
