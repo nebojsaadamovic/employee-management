@@ -24,12 +24,14 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping("/list")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'USER')")
     public ResponseEntity<List<Employee>> getAllEmployees() {
         List<Employee> employees = employeeService.findAllActiveEmployees();
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('HR')")
     public ResponseEntity<String> createEmployee(@RequestBody UserDTO employee) throws JsonProcessingException {
         System.out.println(employee);
         String createdEmployee = employeeService.createEmployeDTO(employee);
@@ -37,11 +39,13 @@ public class EmployeeController {
     }
 
     @GetMapping("/get-by/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'USER')")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
         Employee employee = employeeService.getEmployeeById(id);
         return new ResponseEntity<>(employee, HttpStatus.OK);
     }
 
+    @Transactional
     @PutMapping("/update/{id}")
     public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employeeDetails) {
         Employee updatedEmployee = employeeService.updateEmployee(id, employeeDetails);
@@ -56,7 +60,9 @@ public class EmployeeController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+
     @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'USER')")
     public Page<Employee> searchEmployees(
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
