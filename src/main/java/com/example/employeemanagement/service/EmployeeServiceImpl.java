@@ -117,8 +117,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                 newUser.setRole(employeeDetails.getUser().getRole());
                 newUser.setActive(true);
                 userRepository.save(newUser);
+                employee.setUser(newUser);
             }
         }
+
         return employeeRepository.save(employee);
     }
 
