@@ -87,7 +87,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setFirstName(employeeDetails.getFirstName());
         employee.setLastName(employeeDetails.getLastName());
         employee.setSalary(employeeDetails.getSalary());
-        employee.setActive(employeeDetails.getActive());
+        employee.setActive(true);
 
         Department department = employeeDetails.getDepartment();
         if (Objects.nonNull(department)) {
@@ -105,7 +105,18 @@ public class EmployeeServiceImpl implements EmployeeService {
                 User existingUser = existingUserOptional.get();
                 existingUser.setEmail(user.getEmail());
                 existingUser.setPassword(user.getPassword());
+                existingUser.setUsername(user.getUsername());
+                existingUser.setRole(user.getRole());
+                existingUser.setActive(user.getActive());
                 userRepository.save(existingUser);
+            }else{
+                User newUser= new User();
+                newUser.setEmail(employeeDetails.getUser().getEmail());
+                newUser.setPassword(user.getPassword());
+                newUser.setUsername(user.getUsername());
+                newUser.setRole(user.getRole());
+                newUser.setActive(true);
+                userRepository.save(newUser);
             }
         }
         return employeeRepository.save(employee);
