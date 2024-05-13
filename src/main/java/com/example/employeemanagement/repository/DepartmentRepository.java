@@ -15,4 +15,5 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
             "GROUP BY d.id, d.name", nativeQuery = true)
     List<Object[]> getDepartmentStatistics();
 
+    Department findByName(String department);
 }

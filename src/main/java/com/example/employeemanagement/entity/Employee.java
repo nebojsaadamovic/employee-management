@@ -1,6 +1,5 @@
 package com.example.employeemanagement.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -21,7 +20,7 @@ public class Employee  implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonIgnore
+//    @JsonIgnore
     @JsonIgnoreProperties("employees")
     private User user;
 

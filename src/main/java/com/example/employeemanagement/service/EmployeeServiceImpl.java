@@ -3,6 +3,7 @@ package com.example.employeemanagement.service;
 import com.example.employeemanagement.dto.UserDTO;
 import com.example.employeemanagement.entity.Department;
 import com.example.employeemanagement.entity.Employee;
+import com.example.employeemanagement.entity.RoleName;
 import com.example.employeemanagement.entity.User;
 import com.example.employeemanagement.repository.DepartmentRepository;
 import com.example.employeemanagement.repository.EmployeeRepository;
@@ -81,6 +82,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee updateEmployee(Long id, Employee employeeDetails) {
+        Department department;
+        Optional<User> user;
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with id: " + id));
 
@@ -89,38 +92,40 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setSalary(employeeDetails.getSalary());
         employee.setActive(true);
 
-        Department department = employeeDetails.getDepartment();
-        if (Objects.nonNull(department)) {
-            Optional<Department> existingDepartmentOptional = departmentRepository.findById(department.getId());
-            if (existingDepartmentOptional.isPresent()) {
-                Department existingDepartment = existingDepartmentOptional.get();
-                existingDepartment.setName(department.getName());
-                departmentRepository.save(existingDepartment);
-            }
-        }
-        User user = employeeDetails.getUser();
-        if (Objects.nonNull(user)) {
-            Optional<User> existingUserOptional = userRepository.findById(user.getId());
-            if (existingUserOptional.isPresent()) {
-                User existingUser = existingUserOptional.get();
-                existingUser.setEmail(user.getEmail());
-                existingUser.setPassword(user.getPassword());
-                existingUser.setUsername(user.getUsername());
-                existingUser.setRole(user.getRole());
-                existingUser.setActive(user.getActive());
-                userRepository.save(existingUser);
-            }else{
-                User newUser= new User();
-                newUser.setEmail(employeeDetails.getUser().getEmail());
-                newUser.setPassword(employeeDetails.getUser().getPassword());
-                newUser.setUsername(employeeDetails.getUser().getUsername());
-                newUser.setRole(employeeDetails.getUser().getRole());
-                newUser.setActive(true);
-                userRepository.save(newUser);
-                employee.setUser(newUser);
-            }
+        department = departmentRepository.findByName(employeeDetails.getDepartment().getName());
+        System.out.println(department);
+        if (Objects.isNull(department)) {
+            department = new Department();
+            department.setName(employeeDetails.getDepartment().getName());
+            departmentRepository.save(department);
+            employee.setDepartment(department);
+        } else {
+            department.setName(employeeDetails.getDepartment().getName());
+            employee.setDepartment(department);
         }
 
+        Optional<User> userDetails = userRepository.findById(employee.getUser().getId());
+        if (userDetails.isPresent()) {
+            User existingUser = userDetails.get();
+            existingUser.setEmail(employeeDetails.getUser().getEmail());
+            existingUser.setPassword(employeeDetails.getUser().getPassword());
+            existingUser.setUsername(employeeDetails.getUser().getUsername());
+            RoleName roleName = employeeDetails.getUser().getRole();
+            existingUser.setRole(roleName);
+            existingUser.setActive(true);
+            userRepository.save(existingUser);
+            employee.setUser(existingUser);
+        } else {
+            User newUser = new User();
+            newUser.setEmail(employeeDetails.getUser().getEmail());
+            newUser.setPassword(employeeDetails.getUser().getPassword());
+            newUser.setUsername(employeeDetails.getUser().getUsername());
+            RoleName roleName = employeeDetails.getUser().getRole();
+            newUser.setRole(roleName);
+            newUser.setActive(true);
+            userRepository.save(newUser);
+            employee.setUser(newUser);
+        }
         return employeeRepository.save(employee);
     }
 

@@ -20,6 +20,7 @@ public class User implements UserDetails {
     private Integer id;
     private String email;
     private String password;
+    @Column(unique = true)
     private String username;
     private RoleName role;
     private Boolean active = true;
