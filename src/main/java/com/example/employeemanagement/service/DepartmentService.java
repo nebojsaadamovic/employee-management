@@ -14,8 +14,6 @@ public interface DepartmentService {
 
     Department updateDepartment(Long id, Department departmentDetails);
 
-    void deleteDepartment(Long id);
-
     List<Object[]> listDepartByAvgSalaryAndNumEmployees();
 
     List<Employee> getEmployeesByDepartmentId(Long departmentId);

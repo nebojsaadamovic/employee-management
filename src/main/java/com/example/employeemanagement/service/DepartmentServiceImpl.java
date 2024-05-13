@@ -41,11 +41,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public void deleteDepartment(Long id) {
-        departmentRepository.deleteById(id);
-    }
-
-    @Override
     public List<Object[]> listDepartByAvgSalaryAndNumEmployees() {
         return departmentRepository.getDepartmentStatistics();
     }
